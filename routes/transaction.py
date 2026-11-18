@@ -70,8 +70,8 @@ async def create_transaction(data: TransactionCreate, bg: BackgroundTasks):
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Stok unit perumahan habis atau tidak mencukupi")
             
         cursor = await db.execute(
-            "INSERT INTO transactions (house_id, nama_pemesan, jumlah_unit, status) VALUES (?, ?, ?, 'pending')",
-            (data.house_id, data.nama_pemesan, data.jumlah_unit)
+            "INSERT INTO transactions (house_id, jumlah_unit, status) VALUES (?, ?, 'pending')",
+            (data.house_id, data.jumlah_unit)
         )
         await db.commit()
         trx_id = cursor.lastrowid
@@ -81,7 +81,6 @@ async def create_transaction(data: TransactionCreate, bg: BackgroundTasks):
         return {
             "id": trx_id,
             "house_id": data.house_id,
-            "nama_pemesan": data.nama_pemesan,
             "jumlah_unit": data.jumlah_unit,
             "status": "pending",
             "message": "Transaksi booking diproses di latar belakang"
